@@ -47,8 +47,7 @@ public class ListViewDragActivity extends Activity {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getApplicationContext());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xf2,
-                        0x6e, 0x71)));
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xf2, 0x6e, 0x71)));
                 // set item width
                 deleteItem.setWidth(dp2px(50));
                 // set a icon
@@ -80,9 +79,8 @@ public class ListViewDragActivity extends Activity {
         for (String item : items) {
             enabled.add(true);
         }
+        adapter.setSwipeEnabled(false);
         listView.setAdapter(adapter, enabled);
-//		listView.setAdapter(adapter);
-
     }
 
     private int dp2px(int dp) {
