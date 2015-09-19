@@ -85,6 +85,7 @@ public class DynamicListView extends ListView {
     public ArrayList<String> mCheeseList;
     //Hacks
     StableArrayAdapter mAdapter;
+    private boolean mReorderEnabled;
     private int mLastEventY = -1;
     private int mdDownY = -1;
     private int mdDownX = -1;
@@ -114,6 +115,7 @@ public class DynamicListView extends ListView {
     private OnMenuItemClickListener mOnMenuItemClickListener;
     private Interpolator mCloseInterpolator;
     private Interpolator mOpenInterpolator;
+    private OnSortListener mOnSortListener;
     /**
      * Listens for long clicks on any items in the listview. When a cell has
      * been selected, the hover cell is created and set up.
@@ -121,21 +123,25 @@ public class DynamicListView extends ListView {
     private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
             new AdapterView.OnItemLongClickListener() {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                    mTotalOffset = 0;
+                    if(mReorderEnabled) {
+                        mTotalOffset = 0;
 
-                    int position = pointToPosition(mdDownX, mdDownY);
-                    int itemNum = position - getFirstVisiblePosition();
+                        int position = pointToPosition(mdDownX, mdDownY);
+                        int itemNum = position - getFirstVisiblePosition();
 
-                    View selectedView = getChildAt(itemNum);
-                    mMobileItemId = getAdapter().getItemId(position);
-                    mHoverCell = getAndAddHoverView(selectedView);
-                    selectedView.setVisibility(INVISIBLE);
+                        View selectedView = getChildAt(itemNum);
+                        mMobileItemId = getAdapter().getItemId(position);
+                        mHoverCell = getAndAddHoverView(selectedView);
+                        selectedView.setVisibility(INVISIBLE);
 
-                    mCellIsMobile = true;
+                        mCellIsMobile = true;
 
-                    updateNeighborViewsForID(mMobileItemId);
+                        updateNeighborViewsForID(mMobileItemId);
 
-                    return true;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             };
     /**
@@ -532,9 +538,16 @@ public class DynamicListView extends ListView {
                 return;
             }
 
-            swapElements(mCheeseList, originalItem, getPositionForView(switchView));
+            int endPos = getPositionForView(switchView);
+            if(originalItem != endPos) {
+                swapElements(mCheeseList, originalItem, endPos);
 
-            ((BaseAdapter) getPrimaryAdapter()).notifyDataSetChanged();
+                ((BaseAdapter) getPrimaryAdapter()).notifyDataSetChanged();
+
+                if (null != mOnSortListener) {
+                    mOnSortListener.onSorted(mCheeseList, originalItem, endPos);
+                }
+            }
 
             mdDownY = mLastEventY;
 
@@ -767,5 +780,17 @@ public class DynamicListView extends ListView {
         void onSwipeStart(int position);
 
         void onSwipeEnd(int position);
+    }
+
+    public void setSwipeEnabled(boolean enabled) {
+        this.mReorderEnabled = enabled;
+    }
+
+    public interface OnSortListener{
+        void onSorted(ArrayList moddList, int startPostion, int endPostion);
+    }
+
+    public void setOnSortedListiner(OnSortListener onSortListener){
+        this.mOnSortListener = onSortListener;
     }
 }

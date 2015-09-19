@@ -16,7 +16,6 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
 
     final int INVALID_ID = -1;
     HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-    boolean mEnabled;
     private ArrayList<String> items;
     private LayoutInflater inflater;
 
@@ -40,13 +39,6 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
         convertView = inflater.inflate(R.layout.text_view, null);
         TextView text = (TextView) convertView.findViewById(R.id.text1);
         text.setText(getItem(position));
-        if (!mEnabled) {
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-        }
         return convertView;
     }
 
@@ -64,7 +56,4 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
         return true;
     }
 
-    public void setSwipeEnabled(boolean enabled) {
-        this.mEnabled = enabled;
-    }
 }

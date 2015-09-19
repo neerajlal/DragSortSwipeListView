@@ -79,8 +79,14 @@ public class ListViewDragActivity extends Activity {
         for (String item : items) {
             enabled.add(true);
         }
-        adapter.setSwipeEnabled(false);
+        listView.setSwipeEnabled(false);
         listView.setAdapter(adapter, enabled);
+        listView.setOnSortedListiner(new DynamicListView.OnSortListener() {
+            @Override
+            public void onSorted(ArrayList moddList, int startPostion, int endPostion) {
+                //Handle sort
+            }
+        });
     }
 
     private int dp2px(int dp) {
